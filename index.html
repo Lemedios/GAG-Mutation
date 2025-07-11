@@ -1,184 +1,155 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
+<title>Mutations Encyclopedia</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mutation Encyclopedia</title>
 <style>
-  :root{
-    --primary:#4CAF50;
-    --bg:#f5f5f5;
-    --card-bg:#ffffff;
-    --text:#333;
-  }
-  body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);
-    color:var(--text);
-  }
-  header{
-    background:var(--primary);
-    color:#fff;
-    padding:1rem;
-    text-align:center;
-    font-size:1.3rem;
-  }
-  #button-container{
-    display:grid;
-    gap:.5rem;
-    padding:1rem;
-    grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-    max-width:1100px;
-    margin:auto;
-  }
-  .mutation-btn{
-    background:var(--card-bg);
-    border:1px solid #ddd;
-    border-radius:6px;
-    padding:.6rem .2rem;
-    font-size:.9rem;
-    cursor:pointer;
-    transition:.2s;
-  }
-  .mutation-btn:hover,
-  .mutation-btn:focus{
-    background:var(--primary);
-    color:#fff;
-    border-color:var(--primary);
-    outline:none;
-  }
-  #detail{
-    padding:1.5rem;
-    max-width:800px;
-    margin:auto;
-  }
-  .card{
-    background:var(--card-bg);
-    border-radius:8px;
-    padding:1.5rem;
-    box-shadow:0 2px 4px rgba(0,0,0,.1);
-  }
-  .name{
-    font-size:1.8rem;
-    font-weight:700;
-    margin:0;
-  }
-  .multiplier{
-    font-size:1.2rem;
-    margin:.5rem 0 1rem;
-  }
-  .description{
-    line-height:1.6;
-    white-space:pre-wrap;
-  }
-  @media (prefers-color-scheme: dark){
-    :root{
-      --bg:#121212;
-      --card-bg:#1f1f1f;
-      --text:#eaeaea;
-      --primary:#009688;
-    }
-    .mutation-btn{border-color:#333;}
-  }
+:root{
+  --bg:#121212;   /* 背景 (ダーク) */
+  --fg:#ffffff;   /* 文字色(白)   */
+  --accent:#1f85ff;
+  --card:#1e1e1e;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+header{
+  padding:1rem 2rem;
+  text-align:center;
+  font-size:1.5rem;
+  font-weight:600;
+  border-bottom:1px solid #333;
+}
+#list,#detail{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:2rem 1rem 3rem;
+}
+.grid{
+  width:100%;
+  max-width:960px;
+  display:grid;
+  gap:1rem;
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+}
+button.item{
+  background:var(--card);
+  color:var(--fg);
+  border:1px solid #444;
+  border-radius:6px;
+  padding:0.8rem 1rem;
+  cursor:pointer;
+  transition:background .2s,border-color .2s;
+}
+button.item:hover,
+button.item:focus{
+  background:#2a2a2a;
+  border-color:var(--accent);
+  outline:none;
+}
+.hidden{display:none}
+
+#detailCard{
+  background:var(--card);
+  width:100%;
+  max-width:600px;
+  border-radius:8px;
+  padding:2rem;
+  box-shadow:0 0 10px rgba(0,0,0,.5);
+}
+#detailCard h2{margin-bottom:1rem;font-size:1.4rem}
+#detailCard p{margin-bottom:0.8rem;line-height:1.6}
+
+@media (prefers-color-scheme: light){
+  body{background:#fafafa;color:#111}
+  button.item{background:#fff;color:#111;border-color:#ccc}
+  #detailCard{background:#fff;color:#111}
+}
 </style>
 </head>
 <body>
-<header>Mutation Encyclopedia</header>
+<header>Mutations Encyclopedia</header>
 
-<main>
-  <!-- ボタン一覧 -->
-  <section id="button-container"></section>
+<!-- 一覧 -->
+<section id="list">
+  <div class="grid" id="buttons"></div>
+</section>
 
-  <!-- 詳細表示 -->
-  <section id="detail">
-    <div class="card" id="placeholder">
-      <p style="text-align:center;margin:0;">左の一覧から変異を選択してください</p>
-    </div>
-  </section>
-</main>
+<!-- 詳細 -->
+<section id="detail" class="hidden">
+  <div id="detailCard">
+    <h2 id="dName"></h2>
+    <p id="dMultiplier"></p>
+    <p id="dDesc"></p>
+  </div>
+</section>
 
 <script>
-/* === データ定義 ========================================== */
-const data = [
-  {name:"Amber",multiplier:"10倍",description:"Mutation Spray Amber使用またはRaptorペット使用で発生"},
-  {name:"Ancientamber",multiplier:"50倍",description:"Oldamberを2.5～3日放置で進化"},
-  {name:"Aurora",multiplier:"90倍",description:"Aurora Borealisイベント中に発生"},
-  {name:"Bloodlit",multiplier:"4倍",description:"Blood Moonイベント中に発生"},
-  {name:"Burnt",multiplier:"4倍",description:"Burnt Mutation SprayまたはCooked Owlペット使用で発生"},
-  {name:"Celestial",multiplier:"120倍",description:"Meteor Showerイベント中に発生"},
-  {name:"Ceramic",multiplier:"50倍",description:"ClayにSundriedを重ねると発生"},
-  {name:"Chilled",multiplier:"2倍",description:"Frost天候またはPolar Bearペットで発生"},
-  {name:"Choc",multiplier:"2倍",description:"Chocolate Rainイベント／Chocolate Sprinkler／Spray使用で発生"},
-  {name:"Clay",multiplier:"3倍",description:"Wet＋Sandyの重複条件で発生"},
-  {name:"Cloudtouched",multiplier:"5倍",description:"Mutation Spray CloudtouchedまたはHyacinth Macawペットで発生"},
-  {name:"Cooked",multiplier:"25倍",description:"Cooked Owlペット使用で発生"},
-  {name:"Dawnbound",multiplier:"150倍",description:"Sun Godイベント中、4人でSunflowerをSun Godに当てると発生（管理者限定）"},
-  {name:"Disco",multiplier:"125倍",description:"Discoイベント（管理者限定）中に発生"},
-  {name:"Drenched",multiplier:"5倍",description:"Tropical Rainイベント中に発生"},
-  {name:"Frozen",multiplier:"10倍",description:"Wet＋Chilled重複中の霜天候で発生"},
-  {name:"Galactic",multiplier:"120倍",description:"Space Travelイベント中に発生"},
-  {name:"Gold",multiplier:"20倍",description:"自然発生1％／Dragonflyペットで発生"},
-  {name:"Heavenly",multiplier:"5倍",description:"Floating Jandelイベント中に発生"},
-  {name:"HoneyGlazed",multiplier:"5倍",description:"Honey Sprinkler使用またはBear Beeペットで発生"},
-  {name:"Molten",multiplier:"25倍",description:"Volcanoイベント中に発生"},
-  {name:"Moonlit",multiplier:"2倍",description:"夜間にランダム6株へ定期的に発生"},
-  {name:"Oldamber",multiplier:"20倍",description:"Amber状態から24時間で進化"},
-  {name:"Paradisal",multiplier:"100倍",description:"Verdant＋Sundriedが重複したときに発生（組み合わせ変異）"},
-  {name:"Plasma",multiplier:"5倍",description:"Laser Stormイベント中に発生"},
-  {name:"Pollinated",multiplier:"3倍",description:"SwarmイベントまたはBeeペット／Mutation Spray Pollinated使用で発生"},
-  {name:"Rainbow",multiplier:"50倍",description:"通常0.1％／Butterflyペットの効果など"},
-  {name:"Sandy",multiplier:"3倍",description:"Sandstorm天候中に発生"},
-  {name:"Shocked",multiplier:"100倍",description:"雷雨中の雷撃／Lightning Rod設置で発生"},
-  {name:"Sundried",multiplier:"85倍",description:"Heat Waveイベント中に発生"},
-  {name:"Twisted",multiplier:"5倍",description:"Tornadoイベント中に発生"},
-  {name:"Verdant",multiplier:"4倍",description:"Scarlet MacawペットまたはSolar Flareイベントで発生"},
-  {name:"Voidtouched",multiplier:"135倍",description:"Black Holeイベント（管理者限定）発生"},
-  {name:"Wet",multiplier:"2倍",description:"RainまたはThunderstorm中に発生／Sprinklerでも発生"},
-  {name:"Wiltproof",multiplier:"4倍",description:"Drought中またはHyacinth Macawペットで発生"},
-  {name:"Windstruck",multiplier:"2倍",description:"WindyまたはGale天候中に発生"},
-  {name:"Zombified",multiplier:"25倍",description:"Chicken Zombieペット使用で発生"},
-];
+const data=[
+ {name:"Amber",multiplier:"10倍",desc:"Mutation Spray Amber使用またはRaptorペット使用で発生"},
+ {name:"Ancientamber",multiplier:"50倍",desc:"Oldamberを2.5～3日放置で進化"},
+ {name:"Aurora",multiplier:"90倍",desc:"Aurora Borealisイベント中に発生"},
+ {name:"Bloodlit",multiplier:"4倍",desc:"Blood Moonイベント中に発生"},
+ {name:"Burnt",multiplier:"4倍",desc:"Burnt Mutation SprayまたはCooked Owlペット使用で発生"},
+ {name:"Celestial",multiplier:"120倍",desc:"Meteor Showerイベント中に発生"},
+ {name:"Ceramic",multiplier:"50倍",desc:"ClayにSundriedを重ねると発生"},
+ {name:"Chilled",multiplier:"2倍",desc:"Frost天候またはPolar Bearペットで発生"},
+ {name:"Choc",multiplier:"2倍",desc:"Chocolate Rainイベント／Chocolate Sprinkler／Spray使用で発生"},
+ {name:"Clay",multiplier:"3倍",desc:"Wet＋Sandyの重複条件で発生"},
+ {name:"Cloudtouched",multiplier:"5倍",desc:"Mutation Spray CloudtouchedまたはHyacinth Macawペットで発生"},
+ {name:"Cooked",multiplier:"25倍",desc:"Cooked Owlペット使用で発生"},
+ {name:"Dawnbound",multiplier:"150倍",desc:"Sun Godイベント中、4人でSunflowerをSun Godに当てると発生（管理者限定）"},
+ {name:"Disco",multiplier:"125倍",desc:"Discoイベント（管理者限定）中に発生"},
+ {name:"Drenched",multiplier:"5倍",desc:"Tropical Rainイベント中に発生"},
+ {name:"Frozen",multiplier:"10倍",desc:"Wet＋Chilled重複中の霜天候で発生"},
+ {name:"Galactic",multiplier:"120倍",desc:"Space Travelイベント中に発生"},
+ {name:"Gold",multiplier:"20倍",desc:"自然発生1％／Dragonflyペットで発生"},
+ {name:"Heavenly",multiplier:"5倍",desc:"Floating Jandelイベント中に発生"},
+ {name:"HoneyGlazed",multiplier:"5倍",desc:"Honey Sprinkler使用またはBear Beeペットで発生"},
+ {name:"Molten",multiplier:"25倍",desc:"Volcanoイベント中に発生"},
+ {name:"Moonlit",multiplier:"2倍",desc:"夜間にランダム6株へ定期的に発生"},
+ {name:"Oldamber",multiplier:"20倍",desc:"Amber状態から24時間で進化"},
+ {name:"Paradisal",multiplier:"100倍",desc:"Verdant＋Sundriedが重複したときに発生（組み合わせ変異）"},
+ {name:"Plasma",multiplier:"5倍",desc:"Laser Stormイベント中に発生"},
+ {name:"Pollinated",multiplier:"3倍",desc:"SwarmイベントまたはBeeペット／Mutation Spray Pollinated使用で発生"},
+ {name:"Rainbow",multiplier:"50倍",desc:"通常0.1％／Butterflyペットの効果など"},
+ {name:"Sandy",multiplier:"3倍",desc:"Sandstorm天候中に発生"},
+ {name:"Shocked",multiplier:"100倍",desc:"雷雨中の雷撃／Lightning Rod設置で発生"},
+ {name:"Sundried",multiplier:"85倍",desc:"Heat Waveイベント中に発生"},
+ {name:"Twisted",multiplier:"5倍",desc:"Tornadoイベント中に発生"},
+ {name:"Verdant",multiplier:"4倍",desc:"Scarlet MacawペットまたはSolar Flareイベントで発生"},
+ {name:"Voidtouched",multiplier:"135倍",desc:"Black Holeイベント（管理者限定）中に発生"},
+ {name:"Wet",multiplier:"2倍",desc:"RainまたはThunderstorm中に発生／Sprinklerでも発生"},
+ {name:"Wiltproof",multiplier:"4倍",desc:"Drought中またはHyacinth Macawペットで発生"},
+ {name:"Windstruck",multiplier:"2倍",desc:"WindyまたはGale天候中に発生"},
+ {name:"Zombified",multiplier:"25倍",desc:"Chicken Zombieペット使用で発生"}
+].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
 
-/* === ボタン生成 ========================================== */
-const container = document.getElementById("button-container");
-const detail   = document.getElementById("detail");
+const buttons=document.getElementById('buttons');
+data.forEach(d=>{
+  const btn=document.createElement('button');
+  btn.className='item';
+  btn.textContent=d.name;
+  btn.onclick=()=>showDetail(d);
+  buttons.appendChild(btn);
+});
 
-data.sort((a,b)=>a.name.localeCompare(b.name,"en",{sensitivity:"base"}))
-    .forEach(item=>{
-      const btn=document.createElement("button");
-      btn.className="mutation-btn";
-      btn.textContent=item.name;
-      btn.addEventListener("click",()=>showDetail(item));
-      container.appendChild(btn);
-    });
-
-/* === 詳細表示 ============================================ */
 function showDetail(item){
-  /* 既存エレメントをクリアして新しいカードを描画 */
-  detail.innerHTML="";
-  const card=document.createElement("div");
-  card.className="card";
-
-  const h=document.createElement("h2");
-  h.className="name";
-  h.textContent=item.name;
-
-  const mult=document.createElement("p");
-  mult.className="multiplier";
-  mult.textContent=`倍率：${item.multiplier}`;
-
-  const desc=document.createElement("p");
-  desc.className="description";
-  desc.textContent=item.description;
-
-  card.appendChild(h);
-  card.appendChild(mult);
-  card.appendChild(desc);
-  detail.appendChild(card);
-
-  /* スクロールしてフォーカス */
-  window.scrollTo({top:card.offsetTop-20,behavior:"smooth"});
+  document.getElementById('dName').textContent=item.name;
+  document.getElementById('dMultiplier').textContent='倍率：'+item.multiplier;
+  document.getElementById('dDesc').textContent=item.desc;
+  document.getElementById('list').classList.add('hidden');
+  document.getElementById('detail').classList.remove('hidden');
+  scrollTo({top:0});
 }
 </script>
 </body>
