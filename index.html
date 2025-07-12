@@ -6,8 +6,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 :root{
-  --bg:#121212;   /* 背景 (ダーク) */
-  --fg:#ffffff;   /* 文字色 (白)  */
+  --bg:#121212;
+  --fg:#ffffff;
   --accent:#1f85ff;
   --card:#1e1e1e;
 }
@@ -95,45 +95,47 @@ button.item:focus{
 
 <script>
 const data=[
- {name:"Amber",multiplier:"10倍",desc:"Mutation Spray Amber使用またはRaptorペット使用で発生"},
- {name:"Ancientamber",multiplier:"50倍",desc:"Oldamberを2.5～3日放置で進化"},
- {name:"Aurora",multiplier:"90倍",desc:"Aurora Borealisイベント中に発生"},
+ {name:"Amber",multiplier:"10倍",desc:"Mutation Spray AmberまたはRaptorペットで発生"},
+ {name:"Ancientamber",multiplier:"50倍",desc:"Oldamberを2.5～3日放置すると発生"},
+ {name:"Aurora",multiplier:"90倍",desc:"Aurora Borealisイベント中に低確率で発生"},
  {name:"Bloodlit",multiplier:"4倍",desc:"Blood Moonイベント中に発生"},
- {name:"Burnt",multiplier:"4倍",desc:"Burnt Mutation SprayまたはCooked Owlペット使用で発生"},
+ {name:"Burnt",multiplier:"4倍",desc:"Burnt Mutation SprayまたはCooked Owlペットで発生"},
  {name:"Celestial",multiplier:"120倍",desc:"Meteor Showerイベント中に発生"},
- {name:"Ceramic",multiplier:"50倍",desc:"ClayにSundriedを重ねると発生"},
+ {name:"Ceramic",multiplier:"50倍",desc:"Clay＋Sundriedが重複したときに発生"},
  {name:"Chilled",multiplier:"2倍",desc:"Frost天候またはPolar Bearペットで発生"},
  {name:"Choc",multiplier:"2倍",desc:"Chocolate Rainイベント／Chocolate Sprinkler／Spray使用で発生"},
- {name:"Clay",multiplier:"3倍",desc:"Wet＋Sandyの重複条件で発生"},
+ {name:"Clay",multiplier:"3倍",desc:"Wet＋Sandyが重複したときに発生"},
  {name:"Cloudtouched",multiplier:"5倍",desc:"Mutation Spray CloudtouchedまたはHyacinth Macawペットで発生"},
- {name:"Cooked",multiplier:"25倍",desc:"Cooked Owlペット使用で発生"},
- {name:"Dawnbound",multiplier:"150倍",desc:"Sun Godイベント中、4人でSunflowerをSun Godに当てると発生（管理者限定）"},
- {name:"Disco",multiplier:"125倍",desc:"Discoイベント（管理者限定）中に発生"},
+ {name:"Cooked",multiplier:"25倍",desc:"Cooked Owlペットで低確率で発生"},
+ {name:"Dawnbound",multiplier:"150倍",desc:"管理者イベント「Sun God」中、4人でSunflowerをSun Godに近くに向けると発生"},
+ {name:"Disco",multiplier:"125倍",desc:"管理者イベント「Disco」イベント中に低確率で発生"},
  {name:"Drenched",multiplier:"5倍",desc:"Tropical Rainイベント中に発生"},
- {name:"Frozen",multiplier:"10倍",desc:"Wet＋Chilled重複中の霜天候で発生"},
- {name:"Galactic",multiplier:"120倍",desc:"Space Travelイベント中に発生"},
+ {name:"Frozen",multiplier:"10倍",desc:"Wet＋Chilledが重複したときに発生"},
+ {name:"Galactic",multiplier:"120倍",desc:"Space Travelイベント中に低確率で発生"},
  {name:"Gold",multiplier:"20倍",desc:"自然発生1％／Dragonflyペットで発生"},
- {name:"Heavenly",multiplier:"5倍",desc:"Floating Jandelイベント中に発生"},
- {name:"HoneyGlazed",multiplier:"5倍",desc:"Honey Sprinkler使用またはBear Beeペットで発生"},
+ {name:"Heavenly",multiplier:"5倍",desc:"管理者イベント「Floating Jandel」イベント中に発生"},
+ {name:"HoneyGlazed",multiplier:"5倍",desc:"Honey SprinklerまたはBear Beeペットで発生"},
  {name:"Molten",multiplier:"25倍",desc:"Volcanoイベント中に発生"},
  {name:"Moonlit",multiplier:"2倍",desc:"夜間にランダム6株へ定期的に発生"},
- {name:"Oldamber",multiplier:"20倍",desc:"Amber状態から24時間で進化"},
- {name:"Paradisal",multiplier:"100倍",desc:"Verdant＋Sundriedが重複したときに発生（組み合わせ変異）"},
- {name:"Plasma",multiplier:"5倍",desc:"Laser Stormイベント中に発生"},
- {name:"Pollinated",multiplier:"3倍",desc:"SwarmイベントまたはBeeペット／Mutation Spray Pollinated使用で発生"},
- {name:"Rainbow",multiplier:"50倍",desc:"通常0.1％／Butterflyペットの効果など"},
+ {name:"Oldamber",multiplier:"20倍",desc:"Amberを24時間放置すると発生"},
+ {name:"Paradisal",multiplier:"100倍",desc:"Verdant＋Sundriedが重複したときに発生"},
+ {name:"Plasma",multiplier:"5倍",desc:"管理者イベント「Laser Storm」イベント中に発生"},
+ {name:"Pollinated",multiplier:"3倍",desc:"SwarmイベントまたはBeeペット／Mutation Spray Pollinatedで発生"},
+ {name:"Rainbow",multiplier:"50倍",desc:"通常0.1％／Butterflyペットの効果で発生"},
  {name:"Sandy",multiplier:"3倍",desc:"Sandstorm天候中に発生"},
- {name:"Shocked",multiplier:"100倍",desc:"雷雨中の雷撃／Lightning Rod設置で発生"},
+ {name:"Shocked",multiplier:"100倍",desc:"雷雨中の雷撃で発生"},
  {name:"Sundried",multiplier:"85倍",desc:"Heat Waveイベント中に発生"},
- {name:"Twisted",multiplier:"5倍",desc:"Tornadoイベント中に発生"},
- {name:"Verdant",multiplier:"4倍",desc:"Scarlet MacawペットまたはSolar Flareイベントで発生"},
- {name:"Voidtouched",multiplier:"135倍",desc:"Black Holeイベント（管理者限定）中に発生"},
- {name:"Wet",multiplier:"2倍",desc:"RainまたはThunderstorm中に発生／Sprinklerでも発生"},
+ {name:"Tempestuous",multiplier:"不明",desc:"恐らく最近のアップデートで追加。Windstruck＋Twistedで発生（推測）"},
+ {name:"Twisted",multiplier:"5倍",desc:"Tornadoイベント中またはPterodactylペットで発生"},
+ {name:"Verdant",multiplier:"4倍",desc:"Scarlet Macawペットまたは管理者イベント「Solar Flare」イベントで発生"},
+ {name:"Voidtouched",multiplier:"135倍",desc:"管理者イベント「Black Hole」イベント中に低確率で発生"},
+ {name:"Wet",multiplier:"2倍",desc:"RainまたはThunderstorm中に発生"},
  {name:"Wiltproof",multiplier:"4倍",desc:"Drought中またはHyacinth Macawペットで発生"},
- {name:"Windstruck",multiplier:"2倍",desc:"WindyまたはGale天候中に発生"},
- {name:"Zombified",multiplier:"25倍",desc:"Chicken Zombieペット使用で発生"}
+ {name:"Windstruck",multiplier:"2倍",desc:"WindyまたはGale天候中に高確率で発生"},
+ {name:"Zombified",multiplier:"25倍",desc:"Chicken Zombieペットで発生"}
 ].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
 
+// ボタン生成
 const buttons=document.getElementById('buttons');
 data.forEach(d=>{
   const btn=document.createElement('button');
@@ -143,6 +145,7 @@ data.forEach(d=>{
   buttons.appendChild(btn);
 });
 
+// 詳細表示
 function showDetail(item){
   document.getElementById('dName').textContent=item.name;
   document.getElementById('dMultiplier').textContent='倍率：'+item.multiplier;
