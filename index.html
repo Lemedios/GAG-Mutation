@@ -21,18 +21,36 @@ body{
   flex-direction:column;
 }
 header{
-  padding:1rem 2rem;
+  padding:1rem 2rem 0.5rem;
   text-align:center;
   font-size:1.5rem;
   font-weight:600;
   border-bottom:1px solid #333;
 }
+/* ───── 検索バー ───── */
+#searchBar{
+  margin:0.8rem auto 1.2rem;
+  width:100%;
+  max-width:360px;
+}
+#searchInput{
+  width:100%;
+  padding:0.6rem 1rem;
+  border-radius:6px;
+  border:1px solid #666;
+  background:var(--card);
+  color:var(--fg);
+  font-size:1rem;
+}
+#searchInput::placeholder{color:#aaa}
+#searchInput:focus{outline:none;border-color:var(--accent)}
+/* ─────────────────── */
 #list,#detail{
   flex:1;
   display:flex;
   flex-direction:column;
   align-items:center;
-  padding:2rem 1rem 3rem;
+  padding:0 1rem 3rem;
 }
 .grid{
   width:100%;
@@ -87,11 +105,15 @@ button.item:focus{
   button.item{background:#fff;color:#111;border-color:#ccc}
   #detailCard{background:#fff;color:#111}
   #tagLimited{background:#dc3545;color:#fff}
+  #searchInput{background:#fff;color:#111;border-color:#bbb}
 }
 </style>
 </head>
 <body>
 <header>Mutations Encyclopedia</header>
+
+<!-- 検索バー -->
+<div id="searchBar"><input type="text" id="searchInput" placeholder="名前で検索…" autocomplete="off"></div>
 
 <!-- 一覧 -->
 <section id="list">
@@ -109,9 +131,8 @@ button.item:focus{
 </section>
 
 <script>
-// ---------- データ（重複なし・44種） ----------
+// ---------- データ ----------
 const data=[
- /* 通常変異 19種 */
  {name:"Aurora",       multiplier:"x90",  desc:"Aurora Borealis",                                         limited:false},
  {name:"Bloodlit",     multiplier:"x4",   desc:"Blood Moon",                                              limited:false},
  {name:"Chilled",      multiplier:"x2",   desc:"Frost天候／Polar Bearペット／Chilledスプレー",             limited:false},
@@ -131,8 +152,7 @@ const data=[
  {name:"Twisted",      multiplier:"x5",   desc:"Tornado天候／Pterodactylペット",                           limited:false},
  {name:"Wet",          multiplier:"x2",   desc:"雨・雷雨／スプリンクラー",                                 limited:false},
  {name:"Windstruck",   multiplier:"x2",   desc:"Windy／Gale天候",                                          limited:false},
-
- /* 限定変異 25種 */
+ /* 限定変異（以下 limited:true） */
  {name:"Alienlike",    multiplier:"x100", desc:"Alien Invasionイベント",                                   limited:true},
  {name:"Amber",        multiplier:"x10",  desc:"Amberスプレー／Raptorペット",                              limited:true},
  {name:"AncientAmber", multiplier:"x50",  desc:"OldAmberを2.5-3日維持",                                    limited:true},
@@ -161,13 +181,23 @@ const data=[
 ].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
 
 // ---------- ボタン生成 ----------
-const buttons=document.getElementById('buttons');
+const buttons = document.getElementById('buttons');
 data.forEach(d=>{
   const btn=document.createElement('button');
   btn.className='item';
   btn.textContent=d.name;
   btn.onclick=()=>showDetail(d);
   buttons.appendChild(btn);
+});
+
+// ---------- 検索フィルタ ----------
+const searchInput=document.getElementById('searchInput');
+searchInput.addEventListener('input',()=>{
+  const q=searchInput.value.trim().toLowerCase();
+  buttons.querySelectorAll('button.item').forEach(btn=>{
+    const match=btn.textContent.toLowerCase().includes(q);
+    btn.style.display = match ? '' : 'none';
+  });
 });
 
 // ---------- 詳細表示 ----------
