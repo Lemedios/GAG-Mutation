@@ -6,70 +6,61 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 :root{
-  --bg:#121212;
-  --fg:#ffffff;
-  --accent:#1f85ff;
-  --card:#1e1e1e;
+  --bg:#121212; --fg:#ffffff; --accent:#1f85ff; --card:#1e1e1e;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
-  background:var(--bg);
-  color:var(--fg);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
+  background:var(--bg); color:var(--fg); min-height:100vh;
+  display:flex; flex-direction:column;
 }
 header{
-  padding:1rem 2rem 0.5rem;
-  text-align:center;
-  font-size:1.5rem;
-  font-weight:600;
+  padding:1rem 2rem 0.5rem; text-align:center; font-size:1.5rem; font-weight:600;
   border-bottom:1px solid #333;
 }
-/* ─── 検索バー ─── */
-#searchBar{margin:0.8rem auto 1.2rem;width:100%;max-width:360px;}
+/* ── 検索バー ── */
+#searchBar{margin:0.8rem auto 1.2rem; width:100%; max-width:360px;}
 #searchInput{
-  width:100%;padding:0.6rem 1rem;border-radius:6px;border:1px solid #666;
-  background:var(--card);color:var(--fg);font-size:1rem;
+  width:100%; padding:0.6rem 1rem; border-radius:6px; border:1px solid #666;
+  background:var(--card); color:var(--fg); font-size:1rem;
 }
 #searchInput::placeholder{color:#aaa}
-#searchInput:focus{outline:none;border-color:var(--accent)}
-/* ───────────────── */
+#searchInput:focus{outline:none; border-color:var(--accent)}
+/* ──────────── */
 #list,#detail{
-  flex:1;display:flex;flex-direction:column;align-items:center;padding:0 1rem 3rem;
+  flex:1; display:flex; flex-direction:column; align-items:center; padding:0 1rem 3rem;
 }
 .grid{
-  width:100%;max-width:960px;display:grid;gap:1rem;
+  width:100%; max-width:960px; display:grid; gap:1rem;
   grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
 }
 button.item{
-  background:var(--card);color:var(--fg);border:1px solid #444;border-radius:6px;
-  padding:0.8rem 1rem;cursor:pointer;transition:background .2s,border-color .2s;
+  background:var(--card); color:var(--fg); border:1px solid #444; border-radius:6px;
+  padding:0.8rem 1rem; cursor:pointer; transition:background .2s,border-color .2s;
 }
-button.item:hover,button.item:focus{background:#2a2a2a;border-color:var(--accent);outline:none;}
+button.item:hover,button.item:focus{background:#2a2a2a; border-color:var(--accent); outline:none;}
 .hidden{display:none}
 
 #detailCard{
-  background:var(--card);width:100%;max-width:600px;border-radius:8px;
-  padding:2rem;box-shadow:0 0 10px rgba(0,0,0,.5);
+  background:var(--card); width:100%; max-width:600px; border-radius:8px;
+  padding:2rem; box-shadow:0 0 10px rgba(0,0,0,.5);
 }
-#detailCard h2{margin-bottom:0.6rem;font-size:1.4rem}
+#detailCard h2{margin-bottom:0.6rem; font-size:1.4rem}
 
 #tagLimited{
-  display:inline-block;background:var(--accent);color:#fff;font-size:0.75rem;font-weight:700;
-  padding:0.15rem 0.5rem;border-radius:4px;margin-bottom:1rem;
+  display:inline-block; background:var(--accent); color:#fff; font-size:0.75rem; font-weight:700;
+  padding:0.15rem 0.5rem; border-radius:4px; margin-bottom:1rem;
 }
 #tagLimited.hidden{display:none!important;}
 
-#detailCard p{margin-bottom:0.8rem;line-height:1.6}
+#detailCard p{margin-bottom:0.8rem; line-height:1.6}
 
 @media (prefers-color-scheme: light){
-  body{background:#fafafa;color:#111}
-  button.item{background:#fff;color:#111;border-color:#ccc}
-  #detailCard{background:#fff;color:#111}
-  #tagLimited{background:#dc3545;color:#fff}
-  #searchInput{background:#fff;color:#111;border-color:#bbb}
+  body{background:#fafafa; color:#111}
+  button.item{background:#fff; color:#111; border-color:#ccc}
+  #detailCard{background:#fff; color:#111}
+  #tagLimited{background:#dc3545; color:#fff}
+  #searchInput{background:#fff; color:#111; border-color:#bbb}
 }
 </style>
 </head>
@@ -96,59 +87,66 @@ button.item:hover,button.item:focus{background:#2a2a2a;border-color:var(--accent
 </section>
 
 <script>
-// ---------- データ ----------
+// --------------------------- データ ---------------------------
 const data=[
-/* ─── 標準変異 19 ─── */
-{name:"Aurora",      multiplier:"x90",  desc:"Aurora Borealisイベント",                                          exclusive:[],                                       limited:false},
-{name:"Bloodlit",    multiplier:"x4",   desc:"Blood Moonイベント",                                              exclusive:[],                                       limited:false},
-{name:"Chilled",     multiplier:"x2",   desc:"Frost天候／Polar Bearペット",                                     exclusive:["Frozen"],                               limited:false},
-{name:"Choc",        multiplier:"x2",   desc:"Chocolate Rainイベント／Chocolate Sprinkler",                     exclusive:[],                                       limited:false},
-{name:"Clay",        multiplier:"x3",   desc:"Wet＋Sandy併発",                                                   exclusive:["Wet","Sandy","Ceramic"],               limited:false},
-{name:"Cloudtouched",multiplier:"x5",   desc:"Cloudtouchedスプレー／Hyacinth Macawペット",                      exclusive:[],                                       limited:false},
-{name:"Celestial",   multiplier:"x120", desc:"Meteor Shower直撃",                                              exclusive:[],                                       limited:false},
-{name:"Drenched",    multiplier:"x5",   desc:"Tropical Rain（Wet置換）",                                        exclusive:["Wet","Frozen"],                        limited:false},
-{name:"Frozen",      multiplier:"x10",  desc:"Wet系＋Chilled併発／Polar Bearペット",                            exclusive:["Wet","Drenched","Chilled"],            limited:false},
-{name:"Gold",        multiplier:"x20",  desc:"1%自然発生／Dragonflyペット",                                     exclusive:["Rainbow"],                             limited:false},
-{name:"Moonlit",     multiplier:"x2",   desc:"夜間(Night)天候",                                                 exclusive:[],                                       limited:false},
-{name:"Pollinated",  multiplier:"x3",   desc:"Bee Swarmイベント／Bee系ペット／Pollinatedスプレー",              exclusive:[],                                       limited:false},
-{name:"Rainbow",     multiplier:"x50",  desc:"0.1%自然発生／Butterflyペット",                                   exclusive:["Gold"],                                limited:false},
-{name:"Sandy",       multiplier:"x3",   desc:"Sandstorm天候",                                                   exclusive:["Clay"],                                limited:false},
-{name:"Shocked",     multiplier:"x100", desc:"Thunderstorm直撃／Shockedスプレー",                               exclusive:[],                                       limited:false},
-{name:"Tempestuous", multiplier:"x12",  desc:"Windstruck＋Twisted＋Sandy併発",                                   exclusive:["Windstruck","Twisted"],                limited:false},
-{name:"Twisted",     multiplier:"x5",   desc:"Tornado天候／Pterodactylペット",                                  exclusive:["Tempestuous"],                          limited:false},
-{name:"Wet",         multiplier:"x2",   desc:"雨・雷雨／スプリンクラー／Sea Turtleペット",                      exclusive:["Drenched","Clay","Frozen"],            limited:false},
-{name:"Windstruck",  multiplier:"x2",   desc:"Windy／Gale天候",                                                 exclusive:["Tempestuous"],                          limited:false},
+/* ── 標準変異 ── */
+{name:"Aurora",      multiplier:"x90",  desc:"Aurora Borealisイベント",                                       exclusive:[],                                         limited:false},
+{name:"Bloodlit",    multiplier:"x4",   desc:"Blood Moonイベント",                                           exclusive:[],                                         limited:false},
+{name:"Chilled",     multiplier:"x2",   desc:"Frost天候／Polar Bearペット／Chilledスプレー",                  exclusive:["Frozen"],                                 limited:false},
+{name:"Choc",        multiplier:"x2",   desc:"Chocolate Rainイベント／Chocolate Sprinkler／Chocスプレー",     exclusive:[],                                         limited:false},
+{name:"Clay",        multiplier:"x3",   desc:"Wet＋Sandy併発",                                                exclusive:["Wet","Sandy","Ceramic"],                 limited:false},
+{name:"Cloudtouched",multiplier:"x5",   desc:"Cloudtouchedスプレー／Hyacinth Macawペット",                   exclusive:[],                                         limited:false},
+{name:"Celestial",   multiplier:"x120", desc:"Meteor Shower直撃",                                            exclusive:[],                                         limited:false},
+{name:"Drenched",    multiplier:"x5",   desc:"Tropical Rain（Wet置換）",                                      exclusive:["Wet","Frozen"],                          limited:false},
+{name:"Frozen",      multiplier:"x10",  desc:"Wet(またはDrenched)＋Chilled併発／Polar Bearペット",            exclusive:["Wet","Drenched","Chilled"],              limited:false},
+{name:"Gold",        multiplier:"x20",  desc:"1%自然発生／Dragonflyペット",                                   exclusive:["Rainbow"],                               limited:false},
+{name:"Moonlit",     multiplier:"x2",   desc:"夜間(Night)",                                                  exclusive:[],                                         limited:false},
+{name:"Pollinated",  multiplier:"x3",   desc:"Bee Swarmイベント／Bee系ペット／Pollinatedスプレー",           exclusive:[],                                         limited:false},
+{name:"Rainbow",     multiplier:"x50",  desc:"0.1%自然発生／Butterflyペット",                                 exclusive:["Gold"],                                  limited:false},
+{name:"Sandy",       multiplier:"x3",   desc:"Sandstorm天候",                                                exclusive:["Clay","Tempestuous"],                    limited:false},
+{name:"Shocked",     multiplier:"x100", desc:"Thunderstorm直撃／Shockedスプレー",                            exclusive:[],                                         limited:false},
+{name:"Tempestuous", multiplier:"x12",  desc:"Windstruck＋Twisted＋Sandy併発",                                exclusive:["Windstruck","Twisted","Sandy"],          limited:false},
+{name:"Toxic",       multiplier:"x12",  desc:"Acid Rainイベント（管理者）",                                   exclusive:[],                                         limited:false},
+{name:"Twisted",     multiplier:"x5",   desc:"Tornado天候／Pterodactylペット",                               exclusive:["Tempestuous"],                            limited:false},
+{name:"Wet",         multiplier:"x2",   desc:"雨・雷雨／スプリンクラー低確率／Sea Turtleペット",             exclusive:["Drenched","Clay","Frozen"],              limited:false},
+{name:"Windstruck",  multiplier:"x2",   desc:"Windy／Gale天候",                                              exclusive:["Tempestuous"],                           limited:false},
+{name:"Wilt",        multiplier:"倍率なし", desc:"Drought天候で枯死",                                        exclusive:["Wiltproof"],                             limited:false},
+{name:"Wiltproof",   multiplier:"x4",   desc:"Hyacinth Macawペット",                                        exclusive:["Wilt"],                                  limited:false},
 
-/* ─── 限定変異 25 ─── */
-{name:"Alienlike",   multiplier:"x100", desc:"Alien Invasionイベント",                                          exclusive:[],                                       limited:true},
-{name:"Amber",       multiplier:"x10",  desc:"Amberスプレー／Raptorペット",                                     exclusive:["OldAmber","AncientAmber"],             limited:true},
-{name:"AncientAmber",multiplier:"x50",  desc:"OldAmberを48h維持",                                              exclusive:["Amber","OldAmber"],                    limited:true},
-{name:"Burnt",       multiplier:"x4",   desc:"Burntスプレー／Cooked Owlペット",                                 exclusive:["Cooked","Ceramic"],                    limited:true},
-{name:"Ceramic",     multiplier:"x30",  desc:"Clay＋熱系(Burnt/Fried/Cooked/Molten/Sundried/Meteoric/Plasma)併発",exclusive:["Clay","Burnt"],                       limited:true},
-{name:"Cooked",      multiplier:"x25",  desc:"Cooked Owlペット",                                                exclusive:["Burnt"],                               limited:true},
-{name:"Dawnbound",   multiplier:"x150", desc:"Sun Godイベント／Ascendedペット",                                  exclusive:[],                                       limited:true},
-{name:"Disco",       multiplier:"x125", desc:"Discoイベント／Disco Beeペット",                                  exclusive:[],                                       limited:true},
-{name:"Fried",       multiplier:"x8",   desc:"Fried Chickenイベント",                                          exclusive:[],                                       limited:true},
-{name:"Friendbound", multiplier:"x70",  desc:"Friendship Pot",                                                 exclusive:[],                                       limited:true},
-{name:"Galactic",    multiplier:"x120", desc:"Space Travelイベント",                                           exclusive:[],                                       limited:true},
-{name:"Heavenly",    multiplier:"x5",   desc:"Floating Jandelイベント",                                        exclusive:[],                                       limited:true},
-{name:"HoneyGlazed", multiplier:"x5",   desc:"Honey Sprinkler／Bear Beeペット",                                exclusive:[],                                       limited:true},
-{name:"Infected",    multiplier:"x75",  desc:"Jandel Zombieイベント",                                          exclusive:[],                                       limited:true},
-{name:"Molten",      multiplier:"x25",  desc:"Volcanoイベント",                                               exclusive:[],                                       limited:true},
-{name:"Meteoric",    multiplier:"x125", desc:"Meteorイベント",                                                exclusive:[],                                       limited:true},
-{name:"OldAmber",    multiplier:"x20",  desc:"Amberを24h維持",                                                exclusive:["Amber","AncientAmber"],                limited:true},
-{name:"Paradisal",   multiplier:"x100", desc:"Verdant＋Sundried併発",                                          exclusive:["Verdant","Sundried"],                  limited:true},
-{name:"Plasma",      multiplier:"x5",   desc:"Laser Stormイベント",                                           exclusive:[],                                       limited:true},
-{name:"Sundried",    multiplier:"x85",  desc:"Heatwave／Solar Flare／Tanning Mirror",                         exclusive:["Paradisal"],                           limited:true},
-{name:"Starised",    multiplier:"x230", desc:"Space Travelイベント(0.4%極稀)",                                 exclusive:[],                                       limited:true},
-{name:"Verdant",     multiplier:"x4",   desc:"Scarlet Macawペット／Solar Flareイベント",                      exclusive:["Paradisal"],                           limited:true},
-{name:"Voidtouched", multiplier:"x135", desc:"Black Holeイベント",                                           exclusive:[],                                       limited:true},
-{name:"Wiltproof",   multiplier:"x4",   desc:"Drought天候",                                                   exclusive:[],                                       limited:true},
-{name:"Zombified",   multiplier:"x25",  desc:"Chicken Zombieペット",                                           exclusive:[],                                       limited:true}
+/* ── 限定変異 ── */
+{name:"Alienlike",   multiplier:"x100", desc:"Alien Invasionイベント",                                       exclusive:[],                                         limited:true},
+{name:"Amber",       multiplier:"x10",  desc:"Amberスプレー／Raptorペット",                                  exclusive:["OldAmber","AncientAmber"],               limited:true},
+{name:"AncientAmber",multiplier:"x50",  desc:"OldAmberを約2〜3日維持",                                       exclusive:["Amber","OldAmber"],                      limited:true},
+{name:"Burnt",       multiplier:"x4",   desc:"Burntスプレー／Cooked Owlペット",                               exclusive:["Cooked","Ceramic"],                      limited:true},
+{name:"Ceramic",     multiplier:"x30",  desc:"Clay＋熱系(Burnt/Fried/Cooked/Molten/Sundried/Meteoric/Plasma)併発", exclusive:["Clay","Burnt"],                 limited:true},
+{name:"Cooked",      multiplier:"x25",  desc:"Cooked Owlペット（稀）",                                       exclusive:["Burnt"],                                 limited:true},
+{name:"Dawnbound",   multiplier:"x150", desc:"Sun Godイベント／Ascendedペット",                               exclusive:[],                                         limited:true},
+{name:"Disco",       multiplier:"x125", desc:"Discoイベント（管理者）／Disco Beeペット",                     exclusive:[],                                         limited:true},
+{name:"Fried",       multiplier:"x8",   desc:"Fried Chickenイベント",                                       exclusive:[],                                         limited:true},
+{name:"Friendbound", multiplier:"x70",  desc:"Friendship Pot",                                              exclusive:[],                                         limited:true},
+{name:"Galactic",    multiplier:"x120", desc:"Space Travelイベント",                                        exclusive:[],                                         limited:true},
+{name:"Heavenly",    multiplier:"x5",   desc:"Floating Jandelイベント（管理者）",                            exclusive:[],                                         limited:true},
+{name:"HoneyGlazed", multiplier:"x5",   desc:"Honey Sprinkler／Bear Beeペット",                             exclusive:[],                                         limited:true},
+{name:"Infected",    multiplier:"x75",  desc:"Jandel Zombieイベント",                                       exclusive:[],                                         limited:true},
+{name:"Meteoric",    multiplier:"x125", desc:"Meteorイベント（管理者）",                                      exclusive:[],                                         limited:true},
+{name:"Molten",      multiplier:"x25",  desc:"Volcanoイベント（管理者）",                                    exclusive:[],                                         limited:true},
+{name:"OldAmber",    multiplier:"x20",  desc:"Amberを24h維持",                                              exclusive:["Amber","AncientAmber"],                  limited:true},
+{name:"Paradisal",   multiplier:"x100", desc:"Verdant＋Sundried併発",                                        exclusive:["Verdant","Sundried"],                    limited:true},
+{name:"Plasma",      multiplier:"x5",   desc:"Laser Stormイベント（管理者）",                                exclusive:[],                                         limited:true},
+{name:"Radioactive", multiplier:"x90",  desc:"Carrotイベントのロケット燃料",                                exclusive:[],                                         limited:true},
+{name:"Starised",    multiplier:"x230", desc:"Space Travelイベント中0.4%",                                  exclusive:[],                                         limited:true},
+{name:"Sundried",    multiplier:"x85",  desc:"Heatwave／Solar Flare／Tanning Mirror",                       exclusive:["Paradisal"],                             limited:true},
+{name:"Tranquil",    multiplier:"x20",  desc:"Zen Auraイベント／タンチョウヅルペット",                      exclusive:[],                                         limited:true},
+{name:"Chakra",      multiplier:"x5",   desc:"Kitsuneペット",                                               exclusive:["Foxfire Chakra"],                       limited:true},
+{name:"Foxfire Chakra",multiplier:"x90",desc:"Kitsuneペット（極稀）",                                       exclusive:["Chakra"],                                limited:true},
+{name:"Verdant",     multiplier:"x4",   desc:"Scarlet Macawペット／Solar Flareイベント",                     exclusive:["Paradisal"],                             limited:true},
+{name:"Voidtouched", multiplier:"x135", desc:"Black Holeイベント（管理者）",                                exclusive:[],                                         limited:true},
+{name:"Wiltproof",   multiplier:"x4",   desc:"Drought天候",                                                 exclusive:[],                                         limited:true}, /* kept for backward reference */
+{name:"Zombified",   multiplier:"x25",  desc:"Chicken Zombieペット",                                        exclusive:[],                                         limited:true}
 ].sort((a,b)=>a.name.localeCompare(b.name,'en',{sensitivity:'base'}));
 
-// ---------- ボタン生成 ----------
-const buttons=document.getElementById('buttons');
+// -------------------- ボタン生成 --------------------
+const buttons = document.getElementById('buttons');
 data.forEach(d=>{
   const btn=document.createElement('button');
   btn.className='item';
@@ -157,16 +155,15 @@ data.forEach(d=>{
   buttons.appendChild(btn);
 });
 
-// ---------- 検索フィルタ ----------
-const searchInput=document.getElementById('searchInput');
-searchInput.addEventListener('input',()=>{
-  const q=searchInput.value.trim().toLowerCase();
+// -------------------- 検索フィルタ --------------------
+document.getElementById('searchInput').addEventListener('input',e=>{
+  const q=e.target.value.trim().toLowerCase();
   buttons.querySelectorAll('button.item').forEach(btn=>{
     btn.style.display = btn.textContent.toLowerCase().includes(q) ? '' : 'none';
   });
 });
 
-// ---------- 詳細表示 ----------
+// -------------------- 詳細表示 --------------------
 function showDetail(item){
   document.getElementById('dName').textContent=item.name;
   document.getElementById('dMultiplier').textContent='倍率：'+item.multiplier;
